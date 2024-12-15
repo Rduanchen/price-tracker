@@ -12,7 +12,7 @@ from src.users.modal import User
 from src.users.config import pwd_context
 from src.news.modal import NewsArticle
 from src.database import Base
-from src.schema import NewsSummaryRequestSchema, PromptRequest
+from src.news.schema import NewsSummaryRequestSchema, PromptRequest
 
 # from main import NewsSummaryRequestSchema, PromptRequest
 # from main import pwd_context
