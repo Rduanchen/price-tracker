@@ -3,7 +3,7 @@ from fastapi import APIRouter, Query
 
 router = APIRouter(
     prefix="/prices",
-        tags=["prices"],
+    tags=["prices"],
     responses={404: {"description": "Not found"}},
 )
 
