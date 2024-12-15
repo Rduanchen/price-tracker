@@ -20,10 +20,10 @@ from urllib.parse import quote
 from bs4 import BeautifulSoup
 import itertools
 
-Base = declarative_base()
-db_engine = create_engine("sqlite:///news_database.db", echo=True)
-Base.metadata.create_all(db_engine)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
+# Base = declarative_base()
+# db_engine = create_engine("sqlite:///news_database.db", echo=True)
+# Base.metadata.create_all(db_engine)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
 
 
 # user_news_association_table = Table(
@@ -244,19 +244,19 @@ from sqlalchemy.orm import Session
 #     return json.loads(ai_response.choices[0].message.content)
 
 
-@app.on_event("startup")
-def startup_event():
-    db = SessionLocal()
-    if db.query(NewsArticle).count() == 0:
-        process_and_store_news_articles(initial_fetch=True)
-    db.close()
-    scheduler.add_job(process_and_store_news_articles, "interval", minutes=100)
-    scheduler.start()
+# @app.on_event("startup")
+# def startup_event():
+#     db = SessionLocal()
+#     if db.query(NewsArticle).count() == 0:
+#         process_and_store_news_articles(initial_fetch=True)
+#     db.close()
+#     scheduler.add_job(process_and_store_news_articles, "interval", minutes=100)
+#     scheduler.start()
 
 
-@app.on_event("shutdown")
-def shutdown_event():
-    scheduler.shutdown()
+# @app.on_event("shutdown")
+# def shutdown_event():
+#     scheduler.shutdown()
 
 
 # pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
