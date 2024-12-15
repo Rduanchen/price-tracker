@@ -2,16 +2,24 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, StaticPool
 from sqlalchemy.orm import sessionmaker
-from main import app
-from main import Base, User, session_opener
+from src.main import app
+# from main import Base, User, open_database_session
+from src.database import open_database_session
+from src.users.modal import User
+from src.users.config import pwd_context
+from src.database import Base
 from jose import jwt
-from main import pwd_context
+# from main import pwd_context
 
 SECRET_KEY = "1892dhianiandowqd0n"
 ALGORITHM = "HS256"
 # SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}, poolclass=StaticPool)
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -26,15 +34,17 @@ def override_session_opener():
         db.close()
 
 
-app.dependency_overrides[session_opener] = override_session_opener
+app.dependency_overrides[open_database_session] = override_session_opener
 
 client = TestClient(app)
+
 
 @pytest.fixture(scope="module")
 def clear_users():
     with next(override_session_opener()) as db:
         db.query(User).delete()
         db.commit()
+
 
 @pytest.fixture(scope="module")
 def test_user(clear_users):
@@ -50,15 +60,17 @@ def test_user(clear_users):
 
 @pytest.fixture(scope="module")
 def test_token(test_user):
-    access_token = jwt.encode({"sub": test_user.username}, SECRET_KEY, algorithm=ALGORITHM)
+    access_token = jwt.encode(
+        {"sub": test_user.username}, SECRET_KEY, algorithm=ALGORITHM
+    )
     return access_token
 
 
 def test_register_user():
-    response = client.post("/api/v1/users/register", json={
-        "username": "newuser",
-        "password": "newpassword"
-    })
+    response = client.post(
+        "/api/v1/users/register",
+        json={"username": "newuser", "password": "newpassword"},
+    )
 
     assert response.status_code == 200
     data = response.json()
@@ -66,10 +78,9 @@ def test_register_user():
 
 
 def test_login_for_access_token(test_user):
-    response = client.post("/api/v1/users/login", data={
-        "username": "testuser",
-        "password": "testpassword"
-    })
+    response = client.post(
+        "/api/v1/users/login", data={"username": "testuser", "password": "testpassword"}
+    )
 
     assert response.status_code == 200
     data = response.json()

@@ -1,0 +1,10 @@
+DATABASE_URL = "sqlite:///news_database.db"
+SENTRY_DSN = "https://4001ffe917ccb261aa0e0c34026dc343@o4505702629834752.ingest.us.sentry.io/4507694792704000"
+TRACES_SAMPLE_RATE = 1.0
+PROFILES_SAMPLE_RATE = 1.0
+OPENAI_API_KEY = "xxx"
+OPENAI_MODEL = "gpt-3.5-turbo"
+UDN_NEWS_API_URL = "https://udn.com/api/more"
+JWT_SECRET_KEY = "1892dhianiandowqd0n"
+JWT_ENCRYPTION_ALGORITHM = "HS256"
+TOKEN_TYPE = "bearer"
